@@ -1,0 +1,21 @@
+{
+  "name": "o-log/php-components",
+  "repositories" : [
+    {
+      "type" : "git",
+      "url" : "https://github.com/o-log/php-model"
+    }
+  ],
+  "require-dev": {
+    "oyejorge/less.php": "~1.7"
+  },
+  "require": {
+    "o-log/php-model" : "dev-master"
+  },
+  "autoload": {
+    "psr-0": {
+      "OLOG": "",
+      "PHPComponentsDemo": ""
+    }
+  }
+}
