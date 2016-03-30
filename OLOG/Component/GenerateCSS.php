@@ -10,6 +10,12 @@ class GenerateCSS
     static $less_path = './assets/common.less';
     static $css_path = './assets/common.css';
 
+    public static function getCssClassName($class_name){
+        $class_name = \OLOG\Model\Helper::globalizeClassName($class_name);
+        $css_class_name = str_replace('\\', '_', $class_name);
+        return $css_class_name;
+    }
+
     public static function generateCSS()
     {
         self::resetComponentsCss(); // TODO: build in memory, no intermediate file?
@@ -37,7 +43,9 @@ class GenerateCSS
             throw new \Exception('Can not read file: ' . $css_path);
         }
 
-        $css_class_name = \OLOG\Component\Helper::getCssClassName($class_name);
+        $data .= "\n";
+
+        $css_class_name = self::getCssClassName($class_name);
         $data = str_replace('_COMPONENT_CLASS', $css_class_name, $data);
 
         $less_path = self::$less_path;

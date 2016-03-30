@@ -9,4 +9,12 @@ class DemoHeaderComponent implements InterfaceComponent
 {
     use ComponentTrait;
 
+    static public function render()
+    {
+        $_component_class = \OLOG\Component\GenerateCSS::getCssClassName(__CLASS__);
+
+        ?>
+        <h1 class="<?= $_component_class ?>">PAGE HEADER</h1>
+        <?php
+    }
 }

@@ -8,3 +8,5 @@ require_once '../vendor/autoload.php';
 
 \OLOG\Component\GenerateCSS::generateCSS();
 \OLOG\Component\GenerateJS::generateJS();
+
+\PHPComponentsDemo\DemoLayout\DemoLayoutComponent::render();

@@ -2,6 +2,7 @@
 
 namespace PHPComponentsDemo;
 
+use PHPComponentsDemo\DemoContent\DemoContentComponent;
 use PHPComponentsDemo\DemoHeader\DemoHeaderComponent;
 use PHPComponentsDemo\DemoLayout\DemoLayoutComponent;
 
@@ -15,7 +16,8 @@ class Config
 
         $conf['component_classes_arr'] = [
             DemoLayoutComponent::class,
-            DemoHeaderComponent::class
+            DemoHeaderComponent::class,
+            DemoContentComponent::class
         ];
 
         //$conf = \Guk\CommonConfig::get();

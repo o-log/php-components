@@ -4,6 +4,11 @@ namespace OLOG\Component;
 
 class GenerateJS
 {
+    static public function generateComponentInstanceId(){
+        $id = uniqid('comp_');
+        return $id;
+    }
+
     public static function generateJS()
     {
         $components_js_arr = array();
@@ -42,18 +47,24 @@ class GenerateJS
      */
     public static function processJsArr($javascripts_arr, $output_path)
     {
-        $js_base_path = __DIR__ . '/../..'; // ?
         $contents = '';
 
         foreach ($javascripts_arr as $javascript) {
             $file_path = $javascript;
 
-            // путь к скрипту не начинается с / или x:\
+            // TODO: not used now: review, add support for external files???
             if (!preg_match('@(^\/|^[a-z]:[\/\\\\])@i', $javascript)){
+                // путь к скрипту не начинается с / или x:\
+                $js_base_path = __DIR__ . '/../..'; // ?
                 $file_path = $js_base_path . '/' . $javascript;
             }
 
             $contents .= file_get_contents($file_path);
+
+            if ($contents === false){
+                throw new \Exception('Can not read file: ' . $file_path);
+            }
+
             $contents .= "\n";
         }
 

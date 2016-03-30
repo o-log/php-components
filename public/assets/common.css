@@ -1,6 +1,7 @@
-body {
-  font-size: 12px;
+._PHPComponentsDemo_DemoLayout_DemoLayoutComponent {
+  margin: 100px;
 }
-div {
+._PHPComponentsDemo_DemoHeader_DemoHeaderComponent {
   font-size: 24px;
+  background-color: #eee;
 }
