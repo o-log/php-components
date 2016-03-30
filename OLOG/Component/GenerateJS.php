@@ -4,7 +4,7 @@ namespace OLOG\Component;
 
 class GenerateJS
 {
-    public static function buildJavascriptForSportbox2015()
+    public static function generateJS()
     {
         $components_js_arr = array();
 
@@ -18,7 +18,7 @@ class GenerateJS
 
         $source_js_arr = array_merge($js_arr, $components_js_arr);
 
-        self::generateJS(
+        self::processJsArr(
             $source_js_arr,
             './assets/common.js'
         );
@@ -40,9 +40,9 @@ class GenerateJS
      * @param $javascripts_arr - массив склеиваемых скриптов
      * @param $output_path - путь к агрегату
      */
-    public static function generateJS($javascripts_arr, $output_path)
+    public static function processJsArr($javascripts_arr, $output_path)
     {
-        $js_base_path = __DIR__ . '/../..';
+        $js_base_path = __DIR__ . '/../..'; // ?
         $contents = '';
 
         foreach ($javascripts_arr as $javascript) {
@@ -57,7 +57,7 @@ class GenerateJS
             $contents .= "\n";
         }
 
-        $output_path = $js_base_path . '/' . $output_path;
+        //$output_path = $js_base_path . '/' . $output_path;
         file_put_contents($output_path, $contents);
     }
 }

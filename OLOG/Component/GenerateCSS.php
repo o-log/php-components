@@ -6,26 +6,18 @@ use OLOG\Assert;
 
 class GenerateCSS
 {
-    // TODO: relative paths??? FIX
+    // TODO: paths are relative to entry point??? FIX
     static $less_path = './assets/common.less';
     static $css_path = './assets/common.css';
 
-    public static function generateCss()
+    public static function generateCSS()
     {
-        self::resetComponentsCss();
+        self::resetComponentsCss(); // TODO: build in memory, no intermediate file?
 
         $components_arr = \OLOG\ConfWrapper::value('component_classes_arr', []);
         foreach ($components_arr as $component_class_name) {
             self::registerComponentCss($component_class_name);
         }
-
-        /*
-        $main1_less_url = './sites/all/libraries/design/_spbver_/sportbox2015/css/main1.less';
-        $main1_output_path = './sites/all/libraries/design/_spbver_/sportbox2015/css/main1.css';
-
-        $main2_less_url = './sites/all/libraries/design/_spbver_/sportbox2015/css/main2.less';
-        $main2_output_path = './sites/all/libraries/design/_spbver_/sportbox2015/css/main2.css';
-        */
 
         self::generateLessToCss(self::$less_path, self::$css_path, ['compress' => false]);
     }
@@ -36,25 +28,20 @@ class GenerateCSS
     }
 
     public static function registerComponentCss($class_name){
-        //\Sportbox\Helpers::assert($class_name instanceof \Sportbox\Component\InterfaceComponent, $class_name . ' must implement');
+        \OLOG\Model\Helper::exceptionIfClassNotImplementsInterface($class_name, InterfaceComponent::class);
 
-        $css_class_name = \OLOG\Component\Helper::getCssClassName($class_name);
-
-        // TODO: check component interface
-        
         $css_path = $class_name::getCssPath();
         $data = file_get_contents($css_path);
-        //Assert::assert($data);
 
         if ($data === false){
             throw new \Exception('Can not read file: ' . $css_path);
         }
 
+        $css_class_name = \OLOG\Component\Helper::getCssClassName($class_name);
         $data = str_replace('_COMPONENT_CLASS', $css_class_name, $data);
 
         $less_path = self::$less_path;
         $res = file_put_contents($less_path, $data, FILE_APPEND);
-        //Assert::assert($res);
 
         if ($res === false){
             throw new \Exception('Can not write file: ' . $less_path);

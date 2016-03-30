@@ -6,5 +6,5 @@ require_once '../vendor/autoload.php';
 
 \OLOG\ConfWrapper::assignConfig(\PHPComponentsDemo\Config::get());
 
-\OLOG\Component\GenerateCSS::generateCss();
+\OLOG\Component\GenerateCSS::generateCSS();
 \OLOG\Component\GenerateJS::generateJS();

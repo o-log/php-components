@@ -10,6 +10,7 @@ namespace OLOG\Component;
  */
 trait ComponentTrait
 {
+    // TODO: return array to allow multiple files? Separate method for array?
     static public function getCssPath(){
         $class_name = __CLASS__;
 
@@ -20,6 +21,7 @@ trait ComponentTrait
         return dirname($class_file_name) . '/styles.less';
     }
 
+    // TODO: return array to allow multiple files? Separate method for array?
     static public function getJsPath(){
         $class_name = __CLASS__;
 
