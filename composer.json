@@ -10,7 +10,7 @@
     "oyejorge/less.php": "~1.7"
   },
   "require": {
-    "o-log/php-model" : "dev-master"
+    "o-log/php-model" : "0.3"
   },
   "autoload": {
     "psr-0": {
