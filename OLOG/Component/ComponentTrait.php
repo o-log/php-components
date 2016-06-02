@@ -2,12 +2,6 @@
 
 namespace OLOG\Component;
 
-/**
- * Created by PhpStorm.
- * User: ologinov
- * Date: 11.08.15
- * Time: 14:06
- */
 trait ComponentTrait
 {
     // TODO: return array to allow multiple files? Separate method for array?

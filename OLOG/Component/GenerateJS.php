@@ -30,8 +30,6 @@ class GenerateJS
     }
 
     public static function registerComponentJs($class_name, &$js_arr){
-        //\Sportbox\Helpers::assert($class_name instanceof \Sportbox\Component\InterfaceComponent, $class_name . ' must implement');
-
         // TODO: check interface
 
         $js_path = $class_name::getJsPath();

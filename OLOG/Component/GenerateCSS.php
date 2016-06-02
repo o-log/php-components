@@ -10,8 +10,16 @@ class GenerateCSS
     static $less_path = './assets/common.less';
     static $css_path = './assets/common.css';
 
+    static public function appendLeadingSlashIfNone($class_name){
+            if (!preg_match("@^\\\\@", $class_name)){ // если в начале имени класса нет слэша - добавляем
+                $class_name = '\\' . $class_name;
+            }
+
+            return $class_name;
+    }
+    
     public static function getCssClassName($class_name){
-        $class_name = \OLOG\Model\Helper::globalizeClassName($class_name);
+        $class_name = self::appendLeadingSlashIfNone($class_name); // сейчас это делается только для совместимости с предыдущей реализацийе, возможно не нужно
         $css_class_name = str_replace('\\', '_', $class_name);
         return $css_class_name;
     }
@@ -34,7 +42,7 @@ class GenerateCSS
     }
 
     public static function registerComponentCss($class_name){
-        \OLOG\Model\Helper::exceptionIfClassNotImplementsInterface($class_name, InterfaceComponent::class);
+        \OLOG\CheckClassInterfaces::exceptionIfClassNotImplementsInterface($class_name, InterfaceComponent::class);
 
         $css_path = $class_name::getCssPath();
         $data = file_get_contents($css_path);

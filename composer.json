@@ -4,7 +4,7 @@
     "oyejorge/less.php": "~1.7"
   },
   "require": {
-    "o-log/php-model" : "3.*"
+    "o-log/php-lib" : "1.*"
   },
   "autoload": {
     "psr-0": {
