@@ -15,6 +15,67 @@
 - методы getCssPath() и getJsPath(), которые возвращают пути к файлам css и js компонента
 - Файлы css и js компонента используются только сборщиком агрегатов.
 
+# Как использовать модуль в проекте
+
+Сначала нужно подключить модуль в composer.conf и обновить composer.
+
+После этого можно создавать первый компонент. Например, создаем в проекте папку Components/HeaderComponent и в нее кладем следующие файлы:
+
+HeaderComponent.php
+
+    <?php
+
+    namespace Components\HeaderComponent;
+
+    use OLOG\Component\ComponentTrait;
+    use OLOG\Component\InterfaceComponent;
+
+    class HeaderComponent implements InterfaceComponent
+    {
+        use ComponentTrait;
+
+        static public function render()
+        {
+            $_component_class = \OLOG\Component\GenerateCSS::getCssClassName(__CLASS__);
+
+            ?>
+            <h1 class="<?= $_component_class ?>">PAGE HEADER</h1>
+            <?php
+        }
+    }
+
+styles.less
+
+    ._COMPONENT_CLASS {
+      font-size: 24px;
+      background-color: #eee;
+    }
+
+scripts.js - пустой
+
+Потом надо зарегистрировать компонент в сборщике. Добавляем в конфигурацию следующий раздел:
+
+    $conf['component_classes_arr'] = [
+        HeaderComponent::class
+    ];
+
+После этого можно выполнять сборщик. Самый простой вариант выполнения сборщика - включить его в index.php, тогда агрегаты будут пересобираться при каждом запросе к сайту.
+
+    <?php
+
+    require_once '../vendor/autoload.php';
+
+    \OLOG\ConfWrapper::assignConfig(\PHPComponentsDemo\ComponentsDemoConfig::get());
+
+    \OLOG\Component\GenerateCSS::generateCSS();
+    \OLOG\Component\GenerateJS::generateJS();
+
+    \PHPComponentsDemo\DemoLayout\DemoLayoutComponent::render();
+
+И наконец подключаем готовые агрегаты в шаблоне:
+
+    <link href="/assets/common.css" rel="stylesheet"/>
+
 # Дополнительный функционал
 
 ## Трейт компонента
