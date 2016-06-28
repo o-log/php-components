@@ -1,10 +1,8 @@
 {
   "name": "o-log/php-components",
-  "require-dev": {
-    "oyejorge/less.php": "~1.7"
-  },
   "require": {
-    "o-log/php-lib" : "1.*"
+    "o-log/php-lib" : "1.*",
+    "oyejorge/less.php": "~1.7"
   },
   "autoload": {
     "psr-0": {
