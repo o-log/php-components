@@ -59,6 +59,10 @@ scripts.js - пустой
         HeaderComponent::class
     ];
 
+И разрешить сборку JS и CSS файлов в конфиге:
+
+    $conf[\OLOG\Component\ComponentConstants::MODULE_NAME] = new \OLOG\Component\ComponentConfig(true, true);
+    
 После этого можно выполнять сборщик. Самый простой вариант выполнения сборщика - включить его в index.php, тогда агрегаты будут пересобираться при каждом запросе к сайту.
 
     <?php
