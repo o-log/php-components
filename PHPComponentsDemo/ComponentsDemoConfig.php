@@ -20,6 +20,8 @@ class ComponentsDemoConfig
 
         $conf['return_false_if_no_route'] = true; // for local php server
         
+        $conf[\OLOG\Component\ComponentConstants::MODULE_NAME] = new \OLOG\Component\ComponentConfig(true, true);
+        
         return $conf;
     }
 }
