@@ -2,14 +2,27 @@
 
 namespace PHPComponentsDemo;
 
+use OLOG\Component\ComponentConfig;
 use PHPComponentsDemo\DemoContent\DemoContentComponent;
 use PHPComponentsDemo\DemoHeader\DemoHeaderComponent;
 use PHPComponentsDemo\DemoLayout\DemoLayoutComponent;
 
 class ComponentsDemoConfig
 {
-    public static function get()
+    public static function init()
     {
+        ComponentConfig::setComponentClassesArr(
+            [
+                DemoLayoutComponent::class,
+                DemoHeaderComponent::class,
+                DemoContentComponent::class
+            ]
+        );
+
+        ComponentConfig::setGenerateCss(true);
+        ComponentConfig::setGenerateJs(true);
+
+        /*
         $conf = [];
 
         $conf['component_classes_arr'] = [
@@ -23,5 +36,6 @@ class ComponentsDemoConfig
         $conf[\OLOG\Component\ComponentConstants::MODULE_NAME] = new \OLOG\Component\ComponentConfig(true, true);
         
         return $conf;
+        */
     }
 }

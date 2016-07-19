@@ -28,14 +28,15 @@ class GenerateCSS
 
     public static function generateCSS()
     {
-        $config_obj = ComponentConfigWrapper::getConfigObj();
-        if (!$config_obj->generateCss()) {
+        if (!ComponentConfig::getGenerateCss()) {
             return;
         }
 
         self::resetComponentsCss(); // TODO: build in memory, no intermediate file?
 
-        $components_arr = \OLOG\ConfWrapper::value('component_classes_arr', []);
+        //$components_arr = \OLOG\ConfWrapper::value('component_classes_arr', []);
+        $components_arr = ComponentConfig::getComponentClassesArr();
+
         foreach ($components_arr as $component_class_name) {
             self::registerComponentCss($component_class_name);
         }

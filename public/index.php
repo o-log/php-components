@@ -4,7 +4,7 @@
 
 require_once '../vendor/autoload.php';
 
-\OLOG\ConfWrapper::assignConfig(\PHPComponentsDemo\ComponentsDemoConfig::get());
+\PHPComponentsDemo\ComponentsDemoConfig::init();
 
 \OLOG\Component\GenerateCSS::generateCSS();
 \OLOG\Component\GenerateJS::generateJS();

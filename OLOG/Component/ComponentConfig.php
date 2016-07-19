@@ -6,44 +6,55 @@ namespace OLOG\Component;
 
 class ComponentConfig
 {
-    protected $generate_css;
-    protected $generate_js;
+    static protected $generate_css = true;
+    static protected $generate_js = true;
+    static protected $component_classes_arr = [];
 
-    public function __construct($generate_css = false, $generate_js = false)
+    /**
+     * @return array
+     */
+    public static function getComponentClassesArr()
     {
-        $this->setGenerateCss($generate_css);
-        $this->setGenerateJs($generate_js);
+        return self::$component_classes_arr;
     }
 
     /**
-     * @return boolean
+     * @param array $component_classes_arr
      */
-    public function generateCss()
+    public static function setComponentClassesArr($component_classes_arr)
     {
-        return $this->generate_css;
+        self::$component_classes_arr = $component_classes_arr;
     }
 
     /**
-     * @param boolean $generate_css
+     * @return mixed
      */
-    public function setGenerateCss($generate_css)
+    public static function getGenerateCss()
     {
-        $this->generate_css = $generate_css;
+        return self::$generate_css;
     }
 
     /**
-     * @return boolean
+     * @param mixed $generate_css
      */
-    public function generateJs()
+    public static function setGenerateCss($generate_css)
     {
-        return $this->generate_js;
+        self::$generate_css = $generate_css;
     }
 
     /**
-     * @param boolean $generate_js
+     * @return mixed
      */
-    public function setGenerateJs($generate_js)
+    public static function getGenerateJs()
     {
-        $this->generate_js = $generate_js;
+        return self::$generate_js;
+    }
+
+    /**
+     * @param mixed $generate_js
+     */
+    public static function setGenerateJs($generate_js)
+    {
+        self::$generate_js = $generate_js;
     }
 }

@@ -12,14 +12,14 @@ class GenerateJS
 
     public static function generateJS()
     {
-        $config_obj = ComponentConfigWrapper::getConfigObj();
-        if (!$config_obj->generateJs()) {
+        if (!ComponentConfig::getGenerateJs()) {
             return;
         }
 
         $components_js_arr = array();
 
-        $components_arr = \OLOG\ConfWrapper::value('component_classes_arr', []);
+        //$components_arr = \OLOG\ConfWrapper::value('component_classes_arr', []);
+        $components_arr = ComponentConfig::getComponentClassesArr();
         foreach ($components_arr as $component_class_name) {
             self::registerComponentJs($component_class_name, $components_js_arr);
         }
