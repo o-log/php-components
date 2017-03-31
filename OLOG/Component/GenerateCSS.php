@@ -2,14 +2,8 @@
 
 namespace OLOG\Component;
 
-use OLOG\Assert;
-
 class GenerateCSS
 {
-    // TODO: paths are relative to entry point??? FIX
-    static $less_path = './assets/common.less';
-    static $css_path = './assets/common.css';
-
     static public function appendLeadingSlashIfNone($class_name)
     {
         if (!preg_match("@^\\\\@", $class_name)) { // если в начале имени класса нет слэша - добавляем
@@ -32,25 +26,23 @@ class GenerateCSS
             return;
         }
 
-        self::resetComponentsCss(); // TODO: build in memory, no intermediate file?
-
-        //$components_arr = \OLOG\ConfWrapper::value('component_classes_arr', []);
         $components_arr = ComponentConfig::getComponentClassesArr();
 
+        $components_less_str = '';
         foreach ($components_arr as $component_class_name) {
-            self::registerComponentCss($component_class_name);
+            $components_less_str .= self::getLessStrInRegisterComponentCss($component_class_name);
         }
 
-        self::generateLessToCss(self::$less_path, self::$css_path, ['compress' => false]);
+        $output_css_str = self::getGenerateLessToCssStr($components_less_str, ['compress' => false]);
+
+        $css_path = ComponentConfig::getGenerateInPath() . ComponentConfig::getGenerateFileName() . '.css';
+
+        \OLOG\Assert::assert(file_put_contents($css_path, $output_css_str));
+
+        self::minifyCss();
     }
 
-    public static function resetComponentsCss()
-    {
-        $less_url = self::$less_path;
-        file_put_contents($less_url, '');
-    }
-
-    public static function registerComponentCss($class_name)
+    public static function getLessStrInRegisterComponentCss($class_name)
     {
         \OLOG\CheckClassInterfaces::exceptionIfClassNotImplementsInterface($class_name, InterfaceComponent::class);
 
@@ -66,25 +58,36 @@ class GenerateCSS
         $css_class_name = self::getCssClassName($class_name);
         $data = str_replace('_COMPONENT_CLASS', $css_class_name, $data);
 
-        $less_path = self::$less_path;
-        $res = file_put_contents($less_path, $data, FILE_APPEND);
-
-        if ($res === false) {
-            throw new \Exception('Can not write file: ' . $less_path);
-        }
+        return $data;
     }
 
     /**
-     * @param string $input_less входной less-файл
-     * @param string $output_css путь выходного css
+     * Генерация Less в Css
+     * @param string $input_less_str входной less
      * @param string $options опции для LESS парсера, по-умолчанию пустые
+     * @return string $output_css_str выходного css
      */
-    static function generateLessToCss($input_less, $output_css, $options = '')
+    static function getGenerateLessToCssStr($input_less_str, $options = '')
     {
         $less = new \Less_Parser($options);
-        $less->parseFile($input_less);
-        $input_less = $less->getCss();
+        $less->parse($input_less_str);
+        $output_css_str = $less->getCss();
 
-        Assert::assert(file_put_contents($output_css, $input_less));
+        return $output_css_str;
+    }
+
+    static function minifyCss()
+    {
+        $minifier = new \MatthiasMullie\Minify\CSS();
+        $css_path = ComponentConfig::getGenerateInPath() . ComponentConfig::getGenerateFileName() . '.css';
+        $css_min_path = ComponentConfig::getGenerateInPath() . ComponentConfig::getGenerateFileName() . '.min.css';
+
+        $minifier->add($css_path);
+        $minifier->minify($css_min_path);
+    }
+
+    static public function getCssMinFileName()
+    {
+        return ComponentConfig::getGenerateFileName() . '.min.css';
     }
 }

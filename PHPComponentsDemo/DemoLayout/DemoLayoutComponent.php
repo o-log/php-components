@@ -3,6 +3,8 @@
 namespace PHPComponentsDemo\DemoLayout;
 
 use OLOG\Component\ComponentTrait;
+use OLOG\Component\GenerateCSS;
+use OLOG\Component\GenerateJS;
 use OLOG\Component\InterfaceComponent;
 use PHPComponentsDemo\DemoContent\DemoContentComponent;
 use PHPComponentsDemo\DemoHeader\DemoHeaderComponent;
@@ -17,7 +19,7 @@ class DemoLayoutComponent implements InterfaceComponent
         ?>
         <html>
         <head>
-            <link href="/assets/common.css" rel="stylesheet"/>
+            <link href="/assets/<?= GenerateCSS::getCssMinFileName() ?>" rel="stylesheet"/>
         </head>
 
         <body>
@@ -26,6 +28,9 @@ class DemoLayoutComponent implements InterfaceComponent
         <?php DemoHeaderComponent::render() ?>
         <?php DemoContentComponent::render() ?>
             </div>
+
+        <script src="/assets/<?= GenerateJS::getJsMinFileName() ?>"></script>
+
         </body>
 
         </html>

@@ -9,6 +9,9 @@ class ComponentConfig
     static protected $generate_css = true;
     static protected $generate_js = true;
     static protected $component_classes_arr = [];
+    static protected $generate_in_path = './assets/';
+    static protected $generate_file_name = 'common';
+    static protected $add_js_plugins_path_arr = [];
 
     /**
      * @return array
@@ -57,4 +60,53 @@ class ComponentConfig
     {
         self::$generate_js = $generate_js;
     }
+
+    /**
+     * @return string
+     */
+    public static function getGenerateInPath(): string
+    {
+        return self::$generate_in_path;
+    }
+
+    /**
+     * @param string $generate_in_path
+     */
+    public static function setGenerateInPath(string $generate_in_path)
+    {
+        self::$generate_in_path = $generate_in_path;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getGenerateFileName(): string
+    {
+        return self::$generate_file_name;
+    }
+
+    /**
+     * @param string $generate_file_name
+     */
+    public static function setGenerateFileName(string $generate_file_name)
+    {
+        self::$generate_file_name = $generate_file_name;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAddJsPluginsPathArr(): array
+    {
+        return self::$add_js_plugins_path_arr;
+    }
+
+    /**
+     * @param array $add_js_plugins_path_arr
+     */
+    public static function setAddJsPluginsPathArr(array $add_js_plugins_path_arr)
+    {
+        self::$add_js_plugins_path_arr = $add_js_plugins_path_arr;
+    }
+
 }
