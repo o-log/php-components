@@ -18,7 +18,6 @@ class GenerateJS
 
         $components_js_arr = array();
 
-        //$components_arr = \OLOG\ConfWrapper::value('component_classes_arr', []);
         $components_arr = ComponentConfig::getComponentClassesArr();
         foreach ($components_arr as $component_class_name) {
             self::registerComponentJs($component_class_name, $components_js_arr);
@@ -28,10 +27,11 @@ class GenerateJS
 
         $source_js_arr = array_merge($js_arr, $components_js_arr);
 
-        self::processJsArr(
-            $source_js_arr,
-            './assets/common.js'
-        );
+        $js_path = ComponentConfig::getGenerateInPath() . ComponentConfig::getGenerateFileName() . '.js';
+
+        self::processJsArr($source_js_arr, $js_path);
+
+        self::minifyJs();
     }
 
     public static function registerComponentJs($class_name, &$js_arr)
@@ -72,7 +72,26 @@ class GenerateJS
             $contents .= "\n";
         }
 
-        //$output_path = $js_base_path . '/' . $output_path;
         file_put_contents($output_path, $contents);
+    }
+
+    static function minifyJs()
+    {
+        $minifier = new \MatthiasMullie\Minify\JS();
+        $js_path = ComponentConfig::getGenerateInPath() . ComponentConfig::getGenerateFileName() . '.js';
+        $js_min_path = ComponentConfig::getGenerateInPath() . ComponentConfig::getGenerateFileName() . '.min.js';
+
+        $js_plugins_path_arr = ComponentConfig::getAddJsPluginsPathArr();
+        foreach ($js_plugins_path_arr as $js_plugins_path) {
+            $minifier->add($js_plugins_path);
+        }
+
+        $minifier->add($js_path);
+        $minifier->minify($js_min_path);
+    }
+
+    static public function getJsMinFileName()
+    {
+        return ComponentConfig::getGenerateFileName() . '.min.js';
     }
 }

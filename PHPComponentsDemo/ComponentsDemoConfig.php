@@ -19,6 +19,10 @@ class ComponentsDemoConfig
             ]
         );
 
+        ComponentConfig::setAddJsPluginsPathArr([
+            './assets/plugin.js'
+        ]);
+
         ComponentConfig::setGenerateCss(true);
         ComponentConfig::setGenerateJs(true);
 
