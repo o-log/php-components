@@ -64,7 +64,7 @@ class ComponentConfig
     /**
      * @return string
      */
-    public static function getGenerateInPath(): string
+    public static function getGenerateInPath()
     {
         return self::$generate_in_path;
     }
@@ -80,7 +80,7 @@ class ComponentConfig
     /**
      * @return string
      */
-    public static function getGenerateFileName(): string
+    public static function getGenerateFileName()
     {
         return self::$generate_file_name;
     }
@@ -96,7 +96,7 @@ class ComponentConfig
     /**
      * @return array
      */
-    public static function getAddJsPluginsPathArr(): array
+    public static function getAddJsPluginsPathArr()
     {
         return self::$add_js_plugins_path_arr;
     }
