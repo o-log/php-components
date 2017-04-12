@@ -19,7 +19,7 @@ class DemoLayoutComponent implements InterfaceComponent
         ?>
         <html>
         <head>
-            <link href="/assets/<?= GenerateCSS::getCssMinFileName() ?>" rel="stylesheet"/>
+            <link href="/<?= GenerateCSS::minifiedAggregateFileNameForCurrentVersion() ?>" rel="stylesheet"/>
         </head>
 
         <body>

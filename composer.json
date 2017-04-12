@@ -8,6 +8,7 @@
     "autoload": {
         "psr-0": {
             "OLOG": "",
+            "Config": "",
             "PHPComponentsDemo": ""
         }
     }

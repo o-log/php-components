@@ -22,24 +22,5 @@ class ComponentsDemoConfig
         ComponentConfig::setAddJsPluginsPathArr([
             './assets/plugin.js'
         ]);
-
-        ComponentConfig::setGenerateCss(true);
-        ComponentConfig::setGenerateJs(true);
-
-        /*
-        $conf = [];
-
-        $conf['component_classes_arr'] = [
-            DemoLayoutComponent::class,
-            DemoHeaderComponent::class,
-            DemoContentComponent::class
-        ];
-
-        $conf['return_false_if_no_route'] = true; // for local php server
-        
-        $conf[\OLOG\Component\ComponentConstants::MODULE_NAME] = new \OLOG\Component\ComponentConfig(true, true);
-        
-        return $conf;
-        */
     }
 }

@@ -12,10 +12,6 @@ class GenerateJS
 
     public static function generateJS()
     {
-        if (!ComponentConfig::getGenerateJs()) {
-            return;
-        }
-
         $components_js_arr = array();
 
         $components_arr = ComponentConfig::getComponentClassesArr();
