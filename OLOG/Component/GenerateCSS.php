@@ -16,7 +16,7 @@ class GenerateCSS
      */
     public static function buildCSSAggregateFromComponents($target_folder_path_in_filesystem, $config_folder_path_in_filesystem)
     {
-        $current_version = self::getCurrentAggregatesVersion();
+        $current_version = AggregateVersions::getCurrentAggregatesVersion();
         $new_version = $current_version + 1;
 
         $components_arr = ComponentConfig::getComponentClassesArr();
@@ -40,40 +40,7 @@ class GenerateCSS
             $minified_aggregate_path_in_filesystem
         );
 
-        self::increaseAggregateVersion($config_folder_path_in_filesystem);
-    }
-
-    static public function increaseAggregateVersion($config_folder_path_in_filesystem){
-        $version = self::getCurrentAggregatesVersion();
-        $version++;
-
-        $class_name = 'AggregatesVerisonAUTOUPDATED';
-
-        // TODO: namespace hardcoded
-        $class_str = '<?php
-namespace Config;
-class ' . $class_name . ' {
-    static public function version(){
-        return ' . $version . ';
-    }
-}
-';
-
-        $class_file_name = $class_name . '.php';
-        $class_file_path_in_filesystem = FilePath::constructPath([$config_folder_path_in_filesystem, $class_file_name]);
-        $write_result = file_put_contents($class_file_path_in_filesystem, $class_str);
-        \OLOG\Assert::assert($write_result, 'Aggregates version file write failed: ' . $class_file_path_in_filesystem);
-    }
-
-    public static function getCurrentAggregatesVersion(){
-        $version = '1';
-
-        // TODO: now requires Config namespace presence, remove such requirement (make namespace configurable?)
-        if (class_exists('\Config\AggregatesVerisonAUTOUPDATED')){
-            $version = \Config\AggregatesVerisonAUTOUPDATED::version();
-        }
-
-        return $version;
+        AggregateVersions::increaseAggregateVersion($config_folder_path_in_filesystem);
     }
 
     /**
@@ -91,7 +58,7 @@ class ' . $class_name . ' {
      * @return string
      */
     public static function aggregateFileNameForCurrentVersion(){
-        $version = self::getCurrentAggregatesVersion();
+        $version = AggregateVersions::getCurrentAggregatesVersion();
         return self::aggregateFileName($version);
     }
 
@@ -110,7 +77,7 @@ class ' . $class_name . ' {
      * @return string
      */
     public static function minifiedAggregateFileNameForCurrentVersion(){
-        $version = self::getCurrentAggregatesVersion();
+        $version = AggregateVersions::getCurrentAggregatesVersion();
         return self::minifiedAggregateFileName($version);
     }
 

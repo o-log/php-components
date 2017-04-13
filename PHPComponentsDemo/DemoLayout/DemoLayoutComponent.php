@@ -29,7 +29,7 @@ class DemoLayoutComponent implements InterfaceComponent
         <?php DemoContentComponent::render() ?>
             </div>
 
-        <script src="/assets/<?= GenerateJS::getJsMinFileName() ?>"></script>
+        <script src="/<?= GenerateJS::minifiedAggregateFileNameForCurrentVersion() ?>"></script>
 
         </body>
 

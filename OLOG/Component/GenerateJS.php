@@ -2,6 +2,9 @@
 
 namespace OLOG\Component;
 
+use OLOG\Assert;
+use OLOG\FilePath;
+
 class GenerateJS
 {
     static public function generateComponentInstanceId()
@@ -10,54 +13,77 @@ class GenerateJS
         return $id;
     }
 
-    public static function generateJS()
+    public static function buildJSAggregateFromComponents($target_folder_path_in_filesystem, $config_folder_path_in_filesystem)
     {
-        $components_js_arr = array();
+        $current_version = AggregateVersions::getCurrentAggregatesVersion();
+        $new_version = $current_version + 1;
 
+        $components_js_file_paths_arr = array();
         $components_arr = ComponentConfig::getComponentClassesArr();
         foreach ($components_arr as $component_class_name) {
-            self::registerComponentJs($component_class_name, $components_js_arr);
+            array_push($components_js_file_paths_arr, self::getComponentJSPathInFilesystem($component_class_name));
         }
 
-        $js_arr = array();
+        $js_plugins_path_arr = ComponentConfig::getAddJsPluginsPathArr();
+        $source_js_file_paths_arr = array_merge($js_plugins_path_arr, $components_js_file_paths_arr);
 
-        $source_js_arr = array_merge($js_arr, $components_js_arr);
+        $aggregate_path_in_filesystem = FilePath::constructPath([$target_folder_path_in_filesystem, self::aggregateFileName($new_version)]);
+        $minified_aggregate_path_in_filesystem = FilePath::constructPath([$target_folder_path_in_filesystem, self::minifiedAggregateFileName($new_version)]);
 
-        $js_path = ComponentConfig::getGenerateInPath() . ComponentConfig::getGenerateFileName() . '.js';
+        self::buildAndSaveAggregate($source_js_file_paths_arr, $aggregate_path_in_filesystem);
 
-        self::processJsArr($source_js_arr, $js_path);
+        self::minifyJs($aggregate_path_in_filesystem, $minified_aggregate_path_in_filesystem);
 
-        self::minifyJs();
+        AggregateVersions::increaseAggregateVersion($config_folder_path_in_filesystem);
     }
 
-    public static function registerComponentJs($class_name, &$js_arr)
+    static protected function aggregateFileName($version){
+        return 'aggregate_' . $version . '.js';
+    }
+
+    static protected function minifiedAggregateFileName($version){
+        return 'aggregate_' . $version . '.min.js';
+    }
+
+    static public function aggregateFileNameForCurrentVersion(){
+        $version = AggregateVersions::getCurrentAggregatesVersion();
+        return self::aggregateFileName($version);
+    }
+
+    static public function minifiedAggregateFileNameForCurrentVersion(){
+        $version = AggregateVersions::getCurrentAggregatesVersion();
+        return self::minifiedAggregateFileName($version);
+    }
+
+    protected static function getComponentJSPathInFilesystem($component_class_name)
     {
         // TODO: check interface
 
-        $js_path = $class_name::getJsPath();
+        $js_path = $component_class_name::getJsPath();
 
-        array_push($js_arr, $js_path);
-        return $js_arr;
+        return $js_path;
     }
 
     /**
      * сборщик агрегата javascript
-     * @param $javascripts_arr - массив склеиваемых скриптов
-     * @param $output_path - путь к агрегату
+     * @param $source_file_paths_arr - массив склеиваемых скриптов
+     * @param $js_aggregate_path_in_filesystem - путь к агрегату
      */
-    public static function processJsArr($javascripts_arr, $output_path)
+    protected static function buildAndSaveAggregate($source_file_paths_arr, $js_aggregate_path_in_filesystem)
     {
         $contents = '';
 
-        foreach ($javascripts_arr as $javascript) {
+        foreach ($source_file_paths_arr as $javascript) {
             $file_path = $javascript;
 
             // TODO: not used now: review, add support for external files???
+            /*
             if (!preg_match('@(^\/|^[a-z]:[\/\\\\])@i', $javascript)) {
                 // путь к скрипту не начинается с / или x:\
                 $js_base_path = __DIR__ . '/../..'; // ?
                 $file_path = $js_base_path . '/' . $javascript;
             }
+            */
 
             $contents .= file_get_contents($file_path);
 
@@ -68,26 +94,17 @@ class GenerateJS
             $contents .= "\n";
         }
 
-        file_put_contents($output_path, $contents);
+        Assert::assert(file_put_contents($js_aggregate_path_in_filesystem, $contents), 'JS aggregate save failed');
     }
 
-    static function minifyJs()
+    protected static function minifyJs($js_aggregate_path_in_filesystem, $minified_aggregate_path_in_filesystem)
     {
         $minifier = new \MatthiasMullie\Minify\JS();
-        $js_path = ComponentConfig::getGenerateInPath() . ComponentConfig::getGenerateFileName() . '.js';
-        $js_min_path = ComponentConfig::getGenerateInPath() . ComponentConfig::getGenerateFileName() . '.min.js';
 
-        $js_plugins_path_arr = ComponentConfig::getAddJsPluginsPathArr();
-        foreach ($js_plugins_path_arr as $js_plugins_path) {
-            $minifier->add($js_plugins_path);
-        }
+        // TODO: errors check?
+        $minifier->add($js_aggregate_path_in_filesystem);
 
-        $minifier->add($js_path);
-        $minifier->minify($js_min_path);
-    }
-
-    static public function getJsMinFileName()
-    {
-        return ComponentConfig::getGenerateFileName() . '.min.js';
+        // TODO: errors check??
+        $minifier->minify($minified_aggregate_path_in_filesystem);
     }
 }

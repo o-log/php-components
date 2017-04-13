@@ -2,6 +2,6 @@
 namespace Config;
 class AggregatesVerisonAUTOUPDATED {
     static public function version(){
-        return 6;
+        return 10;
     }
 }
