@@ -1,7 +1,7 @@
 <?php
 namespace Config;
-class AggregatesVerisonAUTOUPDATED {
+class JSAggregateVerisonAUTOUPDATED {
     static public function version(){
-        return 10;
+        return 2;
     }
 }

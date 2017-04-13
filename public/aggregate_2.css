@@ -1,0 +1,10 @@
+.PHPComponentsDemo_DemoLayout_DemoLayoutComponent {
+  margin: 100px;
+}
+.PHPComponentsDemo_DemoHeader_DemoHeaderComponent {
+  font-size: 24px;
+  background-color: #eee;
+}
+.PHPComponentsDemo_DemoContent_DemoContentComponent {
+  color: red;
+}
