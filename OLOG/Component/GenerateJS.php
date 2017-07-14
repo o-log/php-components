@@ -56,19 +56,14 @@ class ' . $class_name . ' {
         $current_version = self::getCurrentAggregatesVersion();
         $new_version = $current_version + 1;
 
-        $components_js_file_paths_arr = array();
-        $components_arr = ComponentConfig::getComponentClassesArr();
-        foreach ($components_arr as $component_class_name) {
-            array_push($components_js_file_paths_arr, self::getComponentJSPathInFilesystem($component_class_name));
-        }
-
-        $js_plugins_path_arr = ComponentConfig::getAddJsPluginsPathArr();
-        $source_js_file_paths_arr = array_merge($js_plugins_path_arr, $components_js_file_paths_arr);
+        $all_components_js_str = self::getAllComponentsJsStr();
 
         $aggregate_path_in_filesystem = FilePath::constructPath([$target_folder_path_in_filesystem, self::aggregateFileName($new_version)]);
-        $minified_aggregate_path_in_filesystem = FilePath::constructPath([$target_folder_path_in_filesystem, self::minifiedAggregateFileName($new_version)]);
 
-        self::buildAndSaveAggregate($source_js_file_paths_arr, $aggregate_path_in_filesystem);
+        $js_aggregate_write_result = file_put_contents($aggregate_path_in_filesystem, $all_components_js_str);
+        Assert::assert($js_aggregate_write_result, 'JS aggregate file write failed: ' . $aggregate_path_in_filesystem);
+
+        $minified_aggregate_path_in_filesystem = FilePath::constructPath([$target_folder_path_in_filesystem, self::minifiedAggregateFileName($new_version)]);
 
         self::minifyJs($aggregate_path_in_filesystem, $minified_aggregate_path_in_filesystem);
 
@@ -102,15 +97,18 @@ class ' . $class_name . ' {
         return $js_path;
     }
 
-    /**
-     * сборщик агрегата javascript
-     * @param $source_file_paths_arr - массив склеиваемых скриптов
-     * @param $js_aggregate_path_in_filesystem - путь к агрегату
-     */
-    protected static function buildAndSaveAggregate($source_file_paths_arr, $js_aggregate_path_in_filesystem)
+    public static function getAllComponentsJsStr()
     {
-        $contents = '';
+        $components_js_file_paths_arr = array();
+        $components_arr = ComponentConfig::getComponentClassesArr();
+        foreach ($components_arr as $component_class_name) {
+            array_push($components_js_file_paths_arr, self::getComponentJSPathInFilesystem($component_class_name));
+        }
 
+        $js_plugins_path_arr = ComponentConfig::getAddJsPluginsPathArr();
+        $source_file_paths_arr = array_merge($js_plugins_path_arr, $components_js_file_paths_arr);
+
+        $all_components_js_str = '';
         foreach ($source_file_paths_arr as $javascript) {
             $file_path = $javascript;
 
@@ -123,16 +121,16 @@ class ' . $class_name . ' {
             }
             */
 
-            $contents .= file_get_contents($file_path);
+            $all_components_js_str .= file_get_contents($file_path);
 
-            if ($contents === false) {
+            if ($all_components_js_str === false) {
                 throw new \Exception('Can not read file: ' . $file_path);
             }
 
-            $contents .= "\n";
+            $all_components_js_str .= "\n";
         }
 
-        Assert::assert(file_put_contents($js_aggregate_path_in_filesystem, $contents), 'JS aggregate save failed');
+        return $all_components_js_str;
     }
 
     protected static function minifyJs($js_aggregate_path_in_filesystem, $minified_aggregate_path_in_filesystem)

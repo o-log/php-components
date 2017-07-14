@@ -2,6 +2,7 @@
 
 namespace OLOG\Component;
 
+use OLOG\Assert;
 use OLOG\FilePath;
 
 class GenerateCSS
@@ -44,7 +45,6 @@ class ' . $class_name . ' {
         return $version;
     }
 
-
     /**
      * передаем полный путь к папке, куда надо класть агрегаты
      * почему этот путь не кладется в конфиг: он может зависеть от точки входа, которая используется для генерации
@@ -58,26 +58,16 @@ class ' . $class_name . ' {
         $current_version = self::getCurrentAggregatesVersion();
         $new_version = $current_version + 1;
 
-        $components_arr = ComponentConfig::getComponentClassesArr();
-
-        $all_components_less_str = '';
-        foreach ($components_arr as $component_class_name) {
-            $all_components_less_str .= self::getComponentLessStr($component_class_name);
-        }
-
-        $all_components_css_str = self::convertLessStrToCssStr($all_components_less_str, ['compress' => false]);
+        $all_components_css_str = self::getAllComponentsCssStr();
 
         $aggregate_path_in_filesystem = FilePath::constructPath([$target_folder_path_in_filesystem, self::aggregateFileName($new_version)]);
 
         $css_aggregate_write_result = file_put_contents($aggregate_path_in_filesystem, $all_components_css_str);
-        \OLOG\Assert::assert($css_aggregate_write_result, 'CSS aggregate file write failed: ' . $aggregate_path_in_filesystem);
+        Assert::assert($css_aggregate_write_result, 'CSS aggregate file write failed: ' . $aggregate_path_in_filesystem);
 
         $minified_aggregate_path_in_filesystem = FilePath::constructPath([$target_folder_path_in_filesystem, self::minifiedAggregateFileName($new_version)]);
 
-        self::minifyCssFile(
-            $aggregate_path_in_filesystem,
-            $minified_aggregate_path_in_filesystem
-        );
+        self::minifyCssFile($aggregate_path_in_filesystem, $minified_aggregate_path_in_filesystem);
 
         self::increaseAggregateVersion($config_folder_path_in_filesystem);
     }
@@ -139,6 +129,18 @@ class ' . $class_name . ' {
         return $data;
     }
 
+    public static function getAllComponentsCssStr()
+    {
+        $components_arr = ComponentConfig::getComponentClassesArr();
+
+        $all_components_less_str = '';
+        foreach ($components_arr as $component_class_name) {
+            $all_components_less_str .= self::getComponentLessStr($component_class_name);
+        }
+
+        return self::convertLessStrToCssStr($all_components_less_str, ['compress' => false]);
+    }
+
     /**
      * Генерация Less в Css
      * @param string $input_less_str входной less
@@ -163,17 +165,6 @@ class ' . $class_name . ' {
         // TODO: error check??
         $minifier->minify($css_min_path);
     }
-
-    /*
-    static public function appendLeadingSlashIfNone($class_name)
-    {
-        if (!preg_match("@^\\\\@", $class_name)) { // если в начале имени класса нет слэша - добавляем
-            $class_name = '\\' . $class_name;
-        }
-
-        return $class_name;
-    }
-    */
 
     public static function getCssClassName($class_name)
     {
